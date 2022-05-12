@@ -1,0 +1,41 @@
+plugins {
+    id 'java'
+}
+
+group 'com.runfalcon.bytebuddyagent'
+version '1.0-SNAPSHOT'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation 'net.bytebuddy:byte-buddy:1.12.10'
+    implementation 'net.bytebuddy:byte-buddy-agent:1.12.10'
+
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.1'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.1'
+}
+
+
+
+task fatJar(type: Jar) {
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+    manifest {
+        attributes (
+                "Class-path": configurations.compileClasspath.collect { it.getName() }.join(' '),
+                "Premain-Class": "com.runfalcon.bytebuddyagent.TimerAgent",
+                "Agent-Class": "com.runfalcon.bytebuddyagent.TimerAgent",
+                "Can-Retransform-Classes": "true",
+                "Can-Redefine-Classes": "true",
+                "Implementation-Version": rootProject.version,
+        )
+    }
+    archiveName = "${project.name}.jar"
+    from { configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) } }
+    with jar
+}
+
+test {
+    useJUnitPlatform()
+}
