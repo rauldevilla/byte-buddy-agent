@@ -24,8 +24,8 @@ task fatJar(type: Jar) {
     manifest {
         attributes (
                 "Class-path": configurations.compileClasspath.collect { it.getName() }.join(' '),
-                "Premain-Class": "com.runfalcon.bytebuddyagent.TimerAgent",
-                "Agent-Class": "com.runfalcon.bytebuddyagent.TimerAgent",
+                "Premain-Class": "com.example.bytebuddyagent.TimerAgent",
+                "Agent-Class": "com.example.bytebuddyagent.TimerAgent",
                 "Can-Retransform-Classes": "true",
                 "Can-Redefine-Classes": "true",
                 "Implementation-Version": rootProject.version,
