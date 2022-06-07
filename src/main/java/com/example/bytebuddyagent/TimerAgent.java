@@ -2,6 +2,7 @@ package com.example.bytebuddyagent;
 
 import net.bytebuddy.agent.builder.AgentBuilder;
 import net.bytebuddy.asm.Advice;
+import net.bytebuddy.description.method.MethodDescription;
 import net.bytebuddy.implementation.MethodDelegation;
 import net.bytebuddy.matcher.ElementMatcher;
 import net.bytebuddy.matcher.ElementMatchers;
@@ -29,18 +30,22 @@ public class TimerAgent {
                 )).installOn(instrumentation);
     }
 
-    private static void mode2() {
+    private static void mode2(Instrumentation instrumentation) {
+
         new AgentBuilder.Default()
-                .type(ElementMatchers.nameStartsWith("BP"))
+                .disableClassFormatChanges()
+                .with(AgentBuilder.RedefinitionStrategy.RETRANSFORMATION)
+                .type(ElementMatchers.hasSuperType(ElementMatchers.named("com.example.bytebuddylab.app.AbstractBusinessClass")))
                 .transform((builder, type, classLoader, module) ->
-                        builder.visit(Advice.to(TimerAdvice.class).on(ElementMatchers.any()))
-                );
+                        builder.visit(Advice.to(TimerAdvice.class).on(ElementMatchers.isMethod()))
+                ).installOn(instrumentation);
+
     }
 
     public static void premain(String arguments,
                                Instrumentation instrumentation) {
-        System.out.println(" ******* Agent starts");
-        mode1(instrumentation);
-        //mode2();
+        System.out.println(" ******* Agent starts V 3.0");
+        //mode1(instrumentation);
+        mode2(instrumentation);
     }
 }

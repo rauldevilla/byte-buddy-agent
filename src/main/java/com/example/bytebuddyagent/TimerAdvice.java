@@ -5,12 +5,14 @@ import net.bytebuddy.asm.Advice;
 class TimerAdvice {
 
     @Advice.OnMethodEnter
-    static long enter() {
-        return System.currentTimeMillis();
+    static void onEnter(@Advice.Local("initTimeMaker") long initTimeMaker) {
+        initTimeMaker = System.currentTimeMillis();
     }
 
     @Advice.OnMethodExit(onThrowable = Throwable.class)
-    static void exit(@Advice.Origin String method, @Advice.Enter long start) {
-        System.out.println(" ******* " + method + " took " + (System.currentTimeMillis() - start));
+    //static void onExit(@Advice.Origin String method, @Advice.Enter long start) {
+    static void onExit(@Advice.Origin String method, @Advice.Local("initTimeMaker") long initTimeMaker) {
+        //System.out.println(" ******* " + method + " took " + (System.currentTimeMillis() - start));
+        System.out.println(" ******* " + method + " took " + (System.currentTimeMillis() - initTimeMaker));
     }
 }
