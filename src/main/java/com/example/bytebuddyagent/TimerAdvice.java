@@ -2,7 +2,7 @@ package com.example.bytebuddyagent;
 
 import net.bytebuddy.asm.Advice;
 
-class TimerAdvice {
+public class TimerAdvice {
 
     @Advice.OnMethodEnter(suppress = Throwable.class)
     static long onEnter(
@@ -30,13 +30,48 @@ class TimerAdvice {
                     @Advice.This Object thisObject,
                     @Advice.Origin("#m") String detailedOrigin,
                     @Advice.Thrown Throwable exception) {
-//        System.out.println("Inside exit method . . .");
+
+        System.out.println("<><><><><><><> START exit method [" + origin + "]. . .");
+//        System.out.println(
+//                "<><><><><><><> " +
+//                        " Method " + origin +
+//                        ", This: " + thisObject.getClass().getName() +
+//                        ", Detailed origin: " + detailedOrigin + " " +
+//                        ", Throwable: " + exception + " " +
+//                        " -> Execution Time: " + (System.nanoTime() - time) + " nano seconds");
+
+        //showStuff(time, origin, thisObject, detailedOrigin, exception);
+
+        try {
+            showStuff();
+        } catch (Throwable t) {
+            t.printStackTrace();
+        }
+
+        System.out.println("<><><><><><><> END exit method [" + origin + "]. . .");
+    }
+
+    public static void showStuff() {
+        System.out.println("<><><><><><><> AHI VAMO'");
+    }
+
+    private static void showStuff( long time,
+                                   String origin,
+                                   Object thisObject,
+                                   String detailedOrigin,
+                                   Throwable exception) {
+
+        final boolean isSelectedClass = false;//isSelectedClass(thisObject);
+
+
         System.out.println(
-                "<><><><><><><> " +
-                        " Method " + origin +
-                        ", This: " + thisObject.getClass().getName() +
-                        ", Detailed origin: " + detailedOrigin + " " +
-                        ", Throwable: " + exception + " " +
-                        " -> Execution Time: " + (System.nanoTime() - time) + " nano seconds");
+                "° ° ° ° ° ° onExit: " +
+                        "isSelectedClass: " + isSelectedClass +
+                        ", time: " + time +
+                        ", latency: " + (System.nanoTime() - time) +
+                        ", origin: " + thisObject.getClass() +
+                        ", detailedOrigin: " + detailedOrigin +
+                        ", exception: " + exception
+        );
     }
 }

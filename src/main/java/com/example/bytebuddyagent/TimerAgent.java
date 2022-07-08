@@ -36,9 +36,10 @@ public class TimerAgent {
                 .disableClassFormatChanges()
                 .with(AgentBuilder.RedefinitionStrategy.RETRANSFORMATION)
                 .type(ElementMatchers.any())
+                //.type(ElementMatchers.nameMatches(".*doProcess.*"))
                 //.type(ElementMatchers.hasSuperType(ElementMatchers.named("com.example.bytebuddylab.app.AbstractBusinessClass")))
                 .transform((builder, type, classLoader, module) ->
-                        builder.visit(Advice.to(TimerAdvice.class).on(ElementMatchers.isMethod()))
+                        builder.visit(Advice.to(TimerAdvice.class).on(ElementMatchers.isMethod().and(ElementMatchers.nameMatches(".*doProcess|.*waitALittle.*"))))
                 ).installOn(instrumentation);
 
     }
